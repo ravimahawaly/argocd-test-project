@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-argo-application
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/ravimahawaly/argocd-test-project.git
+    targetRevision: HEAD
+    path: "."  # root of the repo, since app-deploy.yml and app-service.yml are at root
+  destination: 
+    server: https://kubernetes.default.svc
+    namespace: argocd-nginx-browser
+
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true    # will create the namespace if it doesn't exist
+
+    automated:
+      selfHeal: true        # auto-correct drift
+      prune: true            # delete resources removed from Git
